@@ -630,15 +630,7 @@ local function runRotation()
                 end
             end
         end
-    end
-
-    local function high_prio()
-        --emissary stuff removed
-    end
-     -- Faeline Stomp
-    if cast.able.faelineStomp() then
-        if cast.faelineStomp("player","rect",1,5) then ui.debug("Casting Faeline Stomp [CD SEF]") return true end
-    end
+	
     local function heal()
 
         local healUnit = nil
@@ -665,6 +657,14 @@ local function runRotation()
                 return true
             end
         end
+		-- Faeline Stomp
+		if isChecked("Faeline Stomp") and cast.able.faelineStomp() then 
+			if getLowAllies(getValue("Faeline Stomp")) >= getValue("F.Stomp Tagets") then
+				if cast.faelineStomp("player","rect",1,5) then 
+					return 
+				end
+			end
+		end
         -- Enveloping Mist
         if cast.able.envelopingMist() and not cast.last.envelopingMist(1) and not isMoving("player") then
             if #tanks > 0 then
@@ -1544,7 +1544,6 @@ local function runRotation()
         end
 
     end -- end pause
-end
 end --end Runrotation
 
 local id = 270
