@@ -514,7 +514,6 @@ local function runRotation()
         -- Print("Number of enemies: "  .. tostring(#br.enemies))
 
         if SpecificToggle("DPS Key") and not GetCurrentKeyBoardFocus() and essence.conflict.active then
-            if isChecked("WotC as part of DPS") then
                 if talent.manaTea and cast.able.manaTea() and getSpellCD(216113) == 0 then
                     if cast.manaTea() then
                         return true
@@ -524,7 +523,6 @@ local function runRotation()
                     CastSpellByID(216113, "player")
                     return true
                 end
-            end
         end
 
         if (br.player.ui.mode.dps < 4 or buff.wayOfTheCrane.exists()) and not buff.thunderFocusTea.exists() then
@@ -544,15 +542,6 @@ local function runRotation()
             end
 
 
-
-
-
-            --Print("dps_mode: " .. dps_mode)
-            --[[
-                        if inCombat and (isInMelee() and getFacing("player", "target") == true) then
-                            StartAttack()
-                        end
-            ]]
             --lets check for mysticTouch debuff
             local mysticTouchCounter = 0
             if #enemies.yards8 > 0 and level >= 49 then
@@ -581,18 +570,10 @@ local function runRotation()
                         return true
                     end
                 end
-                --[[
-                                if cast.able.touchOfDeath() then
-                                    if cast.touchOfDeath() then
-                                        return true
-                                    end
-                                end
-                ]]
 
 
                 if cast.able.touchOfDeath("target") and getHP("target") < getHP("player") then
                     if cast.touchOfDeath("target") then
-                        --      ui.debug("Casting Touch of Death - DIE! [Pull]")
                         return true
                     end
                 end
@@ -630,6 +611,7 @@ local function runRotation()
                 end
             end
         end
+	end
 	
     local function heal()
 
@@ -640,12 +622,8 @@ local function runRotation()
         local why = "dunno"
         local CurrentBleedstack = 0
 
-
         -- SL patch healing starts here
         healUnit = lowest.unit
-
-
-        --       Print("LH: " .. lowest.hp .. tostring(cast.able.vivify()) .. "  setting:  " .. getOptionValue("Vivify"))
 
         -- Renewing Mists
         if isChecked("Renewing Mist")
@@ -657,6 +635,7 @@ local function runRotation()
                 return true
             end
         end
+		
 		-- Faeline Stomp
 		if isChecked("Faeline Stomp") and cast.able.faelineStomp() then 
 			if getLowAllies(getValue("Faeline Stomp")) >= getValue("F.Stomp Tagets") then
@@ -665,6 +644,7 @@ local function runRotation()
 				end
 			end
 		end
+		
         -- Enveloping Mist
         if cast.able.envelopingMist() and not cast.last.envelopingMist(1) and not isMoving("player") then
             if #tanks > 0 then
@@ -698,15 +678,14 @@ local function runRotation()
         if not isMoving("player") and (getHP(healUnit) <= getValue("Vivify") or specialHeal) then
             if talent.lifecycle and isChecked("Enforce Lifecycles buff") and buff.lifeCyclesVivify.exists() or not talent.lifecycle or not isChecked("Enforce Lifecycles buff") then
                 if getOptionValue("Vivify Casts") == 1 and not buff.soothingMist.exists(healUnit, "exact") then
-                    --  if isChecked("Soothing Mist Instant Cast") and not buff.soothingMist.exists(healUnit, "EXACT") then
-                    if cast.soothingMist(healUnit) then
-                        --      br.addonDebug("[pre-soothe]:" .. UnitName(healUnit) .. " - VIVIFY")
-                        return true
-                    end
-                end
+                    if isChecked("Soothing Mist Instant Cast") and not buff.soothingMist.exists(healUnit, "EXACT") then
+						if cast.soothingMist(healUnit) then
+							return true
+						end
+					end
+				end
                 if buff.soothingMist.exists(healUnit, "EXACT") or getOptionValue("Vivify Casts") == 2 then
                     if cast.vivify(healUnit) then
-                        --    br.addonDebug("[Vivify]: " .. UnitName(healUnit))
                         return
                     end
                 end
@@ -723,7 +702,6 @@ local function runRotation()
 
         if 1 == 2 then
             --Bursting
-            --Print("Check" ..isChecked("Bursting").."#: "..getOptionValue("Bursting"))
             if isChecked("Bursting") and inInstance and #tanks > 0 then
                 local ourtank = tanks[1].unit
                 local Burststack = getDebuffStacks(ourtank, 240443)
@@ -744,7 +722,6 @@ local function runRotation()
                     local GrievUnit = br.friend[i].unit
                     CurrentBleedstack = getDebuffStacks(GrievUnit, 240559)
                     if getDebuffStacks(GrievUnit, 240559) > 0 then
-                        -- Print(GrievUnit.unit)
                         BleedFriendCount = BleedFriendCount + 1
                     end
                     if CurrentBleedstack > BleedStack then
@@ -756,7 +733,6 @@ local function runRotation()
                     healUnit = BleedFriend
                     specialHeal = true
                     why = "[GRIEVOUS]"
-                    --     Print("GrievTarget: " .. thisUnit.name)
                 else
                     -- No Units with Griev below 90% Health
                     BleedStack = 99
@@ -845,23 +821,7 @@ local function runRotation()
                 healUnit = br.friend[1].unit
                 why = "[STD]"
             end
-            --br.addonDebug("Heal Target: " .. healUnit .. " at: " .. getHP(healUnit))
 
-            --[[
-                        --always kick with rising  -- fist weaving
-                        if talent.risingMist then
-                            if lowest.hp > getValue("Critical HP") then
-                                if (buff.teachingsOfTheMonastery.stack() == 1 and cd.risingSunKick.remain() < 12) or buff.teachingsOfTheMonastery.stack() == 3 then
-                                    if cast.blackoutKick(units.dyn5) then
-                                        return true
-                                    end
-                                end
-                            end
-                            if cast.risingSunKick(units.dyn5) then
-                                return true
-                            end
-                        end
-            ]]
             --Life Cocoon
             if isChecked("Life Cocoon") and cast.able.lifeCocoon() and inCombat then
                 if (isChecked("Bursting") and burst and getDebuffStacks("player", 240443) >= getOptionValue("Bursting"))
@@ -877,7 +837,6 @@ local function runRotation()
                     if (getHP(healUnit) <= getValue("Life Cocoon") or specialHeal) and not buff.lifeCocoon.exists(healUnit) then
                         if cast.lifeCocoon(healUnit) then
                             br.addonDebug(tostring(burst) .. "[LifCoc]:" .. UnitName(healUnit) .. " / " .. why .. " HP: " .. tostring(getHP(healUnit)))
-                            --  Print("Bleedstack: " .. tostring(BleedStack))
                             return true
                         end
                     end
@@ -893,10 +852,9 @@ local function runRotation()
                     if select(7, UnitBuffID(br.friend[i].unit, 198533, "exact")) == "player" then
                         soothing_counter = soothing_counter + 1
                     end
-                    --[[if buff.soothingMistJadeStatue.exists(br.friend[i].unit,"exact") then
+                    if buff.soothingMistJadeStatue.exists(br.friend[i].unit,"exact") then
                         soothing_counter = soothing_counter + 1
-                    end]]
-                    --   Print(tostring(soothing_counter))
+                    end
                 end
                 if soothing_counter == 0 then
                     if cast.soothingMist(healUnit) then
@@ -962,17 +920,18 @@ local function runRotation()
             if isChecked("Vivify") and cast.able.vivify() and buff.essenceFont.exists(healUnit) and getHP(healUnit) < 80 then
                 if getOptionValue("Vivify Casts") == 1 and not buff.soothingMist.exists(healUnit, "exact") then
                     if isChecked("Soothing Mist Instant Cast") and not buff.soothingMist.exists(healUnit, "EXACT") then
-                    if cast.soothingMist(healUnit) then
-                        br.addonDebug(tostring(burst) .. "[SooMist]:" .. UnitName(healUnit) .. " / " .. "FONT-BUFF")
-                        return true
-                    end
+						if cast.soothingMist(healUnit) then
+							br.addonDebug(tostring(burst) .. "[SooMist]:" .. UnitName(healUnit) .. " / " .. "FONT-BUFF")
+							return true
+						end
+				    end
                 elseif buff.soothingMist.exists(healUnit, "EXACT") or getOptionValue("Vivify Casts") == 2 then
                     if cast.vivify(healUnit) then
                         br.addonDebug(tostring(burst) .. "[Vivify]:" .. UnitName(healUnit) .. " / " .. "FONT-BUFF")
                         return true
-                    end
-                end
-            end
+					end
+				end
+			end
 
 
             --vivify if hotcount >= 5
