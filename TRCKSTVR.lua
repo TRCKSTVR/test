@@ -1,4 +1,4 @@
-local rotationName = "TRCKSTVR"
+local rotationName = "TRCKSTVRbeta"
 
 local function createToggles()
     -- Define custom toggles
@@ -62,14 +62,16 @@ local function createOptions()
 
     local function rotationOptions()
         local section
-        section = br.ui:createSection(br.ui.window.profile, "Key Options - 200421-0829")
+        section = br.ui:createSection(br.ui.window.profile, "Key Options")
         br.ui:createDropdownWithout(section, "DPS Key", br.dropOptions.Toggle, 6, "DPS key will override any heal/dispel logic")
-        br.ui:createCheckbox(section, "WotC as part of DPS", "Use WotC as part of DPS key")
-
         br.ui:createDropdownWithout(section, "Heal Key", br.dropOptions.Toggle, 6, "Will ignore automated logic and heal mouseover target")
         br.ui:checkSectionState(section)
 
         section = br.ui:createSection(br.ui.window.profile, "Heal Options")
+		br.ui:createCheckbox(section, "OOC Healing", "Enables/Disables out of combat healing.", 1)
+		br.ui:createSpinner(section, "Soothing Mist", 40, 1, 100, 5, "Health Percent to Cast At")
+		br.ui:createCheckbox(section, "Soothing Mist Instant Cast", "Use Soothing Mist first for instant casts")
+        br.ui:createCheckbox(section, "OOC Healing", "Enables/Disables out of combat healing.", 1)
         br.ui:createSpinnerWithout(section, "Critical HP", 30, 0, 100, 5, "", "When to stop what we do, emergency heals!")
         br.ui:createSpinner(section, "Renewing Mist", 0, 0, 100, 1, "Health Percent to Cast At - 0 for on CD")
         br.ui:createSpinner(section, "Refreshing Jade Wind", 70, 0, 100, 5, "Health Percent to Cast At")
@@ -83,22 +85,15 @@ local function createOptions()
         br.ui:createSpinnerWithout(section, "Vivify Spam Health", 75, 1, 100, 1, "min HP to spam vivify w/RM")
         br.ui:createSpinner(section, "Enveloping Mist Tank", 75, 1, 100, 5, "Health Percent to Cast At")
         br.ui:createSpinner(section, "Enveloping Mist", 70, 1, 100, 5, "Health Percent to Cast At")
-        -- br.ui:createCheckbox(section, "Soothing Mist Instant Cast", "Use Soothing Mist first for instant casts")
         br.ui:createDropdownWithout(section, "EM Casts", { "pre-soothe", "hard" }, 1, "EM Cast Mode")
         br.ui:createDropdownWithout(section, "Vivify Casts", { "pre-soothe", "hard" }, 1, "Vivify Cast Mode")
-		
-		br.ui:checkSectionState(section)
-		
-        section = br.ui:createSection(br.ui.window.profile, "Cooldowns")
+
         br.ui:createSpinner(section, "Life Cocoon", 25, 1, 100, 5, "Health Percent to Cast At")
         br.ui:createSpinner(section, "Revival", 40, 1, 100, 5, "Health Percent to Cast At")
-		br.ui:createSpinnerWithout(section, "Revival Targets", 3, 1, 20, 5, "Number of hurt people before triggering spell")
-		br.ui:createSpinner(section, "Faeline Stomp HP", 90, 1, 100, 1, "Faeline Stomp at HP")
-		br.ui:createSpinnerWithout(section, "F.Stomp Targets", 2, 1, 10, 1, "Faeline Stomp at targets")
+        br.ui:createSpinner(section, "Revival", 40, 1, 100, 5, "Health Percent to Cast At")
+        br.ui:createSpinnerWithout(section, "Revival Targets", 3, 1, 20, 5, "Number of hurt people before triggering spell")
         br.ui:createSpinner(section, "Chi Ji", 50, 1, 100, 5, "Health Percent to Cast At")
         br.ui:createSpinnerWithout(section, "Chi Ji Targets", 3, 1, 20, 5, "Number of hurt people before triggering spell")
-        br.ui:createSpinner(section, "Soothing Mist", 40, 1, 100, 5, "Health Percent to Cast At")
-        br.ui:createCheckbox(section, "OOC Healing", "Enables/Disables out of combat healing.", 1)
         br.ui:createCheckbox(section, "Summon Jade Serpent", "Place statue yes/no")
         br.ui:checkSectionState(section)
 
@@ -149,25 +144,6 @@ local function createOptions()
         br.ui:createSpinner(section, "Trinket 2", 70, 0, 100, 5, "Health Percent to Cast At")
         br.ui:createSpinnerWithout(section, "Min Trinket 2 Targets", 3, 1, 40, 1, "", "Minimum Trinket 2 Targets(This includes you)", true)
         br.ui:createDropdownWithout(section, "Trinket 2 Mode", { "|cffFFFFFFNormal", "|cffFFFFFFTarget", "|cffFFFFFFGround", "|cffFFFFFFPocket-Sized CP", "DPS target" }, 1, "", "")
-        br.ui:checkSectionState(section)
-
-        section = br.ui:createSection(br.ui.window.profile, "Corruption")
-        br.ui:createDropdownWithout(section, "Use Cloak", { "snare", "Eye", "THING", "Never" }, 4, "", "")
-        br.ui:createSpinnerWithout(section, "Eye Stacks", 3, 1, 10, 1, "How many stacks before using cloak")
-        br.ui:checkSectionState(section)
-
-        -- Essences
-        --"Memory of Lucid Dreams"
-        section = br.ui:createSection(br.ui.window.profile, "Essences")
-        br.ui:createSpinner(section, "ConcentratedFlame - Heal", 50, 0, 100, 5, "", "health to heal at")
-        br.ui:createCheckbox(section, "ConcentratedFlame - DPS")
-        br.ui:createSpinner(section, "Memory of Lucid Dreams", 50, 0, 100, 5, "", "mana to pop it at")
-        br.ui:createDropdown(section, "Ever Rising Tide", { "Always", "Pair with CDs", "Based on health" }, 1, "When to use this essence")
-        br.ui:createSpinner(section, "Ever Rising Tide - Mana", 30, 0, 100, 5, "", "min mana to use")
-        br.ui:createSpinner(section, "Ever Rising Tide - Health", 30, 0, 100, 5, "", "health threshold to pop at")
-        br.ui:createSpinner(section, "Well of Existence  - Health", 30, 0, 100, 5, "", "health threshold to pop at")
-        br.ui:createSpinner(section, "Seed of Eonar", 80, 0, 100, 5, "Health Percent to Cast At")
-        br.ui:createSpinnerWithout(section, "Seed of Eonar Targets", 3, 0, 40, 1, "Minimum hurting friends")
         br.ui:checkSectionState(section)
 
     end
@@ -350,11 +326,6 @@ local function runRotation()
     end
 
     local function thunderFocusTea()
-
-        if not cast.able.thunderFocusTea() then
-            --not cd.thunderFocusTea.ready() or
-            --Print("I should not be here!")
-        end
 
 
         -- Print(hotcountFunc())
@@ -664,12 +635,10 @@ local function runRotation()
     local function high_prio()
         --emissary stuff removed
     end
-	
      -- Faeline Stomp
     if cast.able.faelineStomp() then
         if cast.faelineStomp("player","rect",1,5) then ui.debug("Casting Faeline Stomp [CD SEF]") return true end
     end
-	
     local function heal()
 
         local healUnit = nil
@@ -987,21 +956,12 @@ local function runRotation()
                     end
                 end
             end
-		
-			-- Faeline Stomp
-		if isChecked("Faeline Stomp") and cast.able.faelineStomp() then 
-			if getLowAllies(getValue("Faeline Stomp")) >= getValue("F.Stomp Tagets") then
-				if cast.faelineStomp("player","rect",1,5) then 
-					return 
-				end
-			end
-		end
 
 
             --vivify on targets with essence font hot
             if isChecked("Vivify") and cast.able.vivify() and buff.essenceFont.exists(healUnit) and getHP(healUnit) < 80 then
                 if getOptionValue("Vivify Casts") == 1 and not buff.soothingMist.exists(healUnit, "exact") then
-                    --   if isChecked("Soothing Mist Instant Cast") and not buff.soothingMist.exists(healUnit, "EXACT") then
+                    if isChecked("Soothing Mist Instant Cast") and not buff.soothingMist.exists(healUnit, "EXACT") then
                     if cast.soothingMist(healUnit) then
                         br.addonDebug(tostring(burst) .. "[SooMist]:" .. UnitName(healUnit) .. " / " .. "FONT-BUFF")
                         return true
@@ -1101,12 +1061,6 @@ local function runRotation()
         end
 
         -- item support
-        --Wraps of wrapsOfElectrostaticPotential
-        if br.player.equiped.wrapsOfElectrostaticPotential and canUseItem(br.player.items.wrapsOfElectrostaticPotential) and ttd("target") >= 10 then
-            if br.player.use.wrapsOfElectrostaticPotential() then
-                br.addonDebug("Using HBracers")
-            end
-        end
         --staff of neural
         if br.player.equiped.neuralSynapseEnhancer and canUseItem(br.player.items.neuralSynapseEnhancer) and ttd("target") >= 15
                 and getDebuffStacks("player", 267034) < 2 -- not if we got stacks on last boss of shrine
@@ -1324,58 +1278,6 @@ local function runRotation()
             end
         end
 
-        --overchargeMana
-        if isChecked("Ever Rising Tide") and essence.overchargeMana.active and getSpellCD(296072) <= gcd then
-            if getOptionValue("Ever Rising Tide") == 1 then
-                if cast.overchargeMana() then
-                    return
-                end
-            end
-            if getOptionValue("Ever Rising Tide") == 2 then
-                if cd.lifeCocoon.exists() or buff.manaTea.exists() or cd.revival.exists() or burst == true then
-                    if cast.overchargeMana() then
-                        return
-                    end
-                end
-            end
-            if getOptionValue("Ever Rising Tide") == 3 then
-                if lowest.hp < getOptionValue("Ever Rising Tide - Health") or burst == true then
-                    if cast.overchargeMana() then
-                        return
-                    end
-                end
-            end
-        end
-        --lucid dreams
-        if isChecked("Memory of Lucid Dreams") and getSpellCD(298357) <= gcd
-                and mana <= getValue("Memory of Lucid Dreams") then
-            if cast.memoryOfLucidDreams() then
-                return
-            end
-        end
-
-        --"Well of Existence  - Health"
-        if isChecked("Well of Existence  - Health") and essence.refreshment.active and getSpellCD(296197) <= gcd then
-            if lowest.hp < getOptionValue("Well of Existence  - Health") or burst == true then
-                if cast.refreshment(lowest.unit) then
-                    return true
-                end
-            end
-        end
-        --Seed of Eonar
-        if isChecked("Seed of Eonar") and essence.lifeBindersInvocation.active and cast.able.lifeBindersInvocation and not moving then
-            for i = 1, #br.friend do
-                if UnitInRange(br.friend[i].unit) then
-                    local lowHealthCandidates = getUnitsToHealAround(br.friend[i].unit, 30, getValue("Seed of Eonar"), #br.friend)
-                    if #lowHealthCandidates >= getValue("Seed of Eonar Targets") and not moving or burst == true then
-                        if cast.lifeBindersInvocation() then
-                            return true
-                        end
-                    end
-                end
-            end
-        end
-
         --Mana Tea
         if isChecked("Mana Tea") and talent.manaTea and not buff.wayOfTheCrane.exists() then
             if (mana <= getValue("Mana Tea") or getValue("Mana Tea") == 0) then
@@ -1384,17 +1286,8 @@ local function runRotation()
                 end
             end
         end
-	
-		-- Faeline Stomp
-		if isChecked("Faeline Stomp") and cast.able.faelineStomp() then 
-			if getLowAllies(getValue("Faeline Stomp")) >= getValue("F.Stomp Tagets") then
-				if cast.faelineStomp("player","rect",1,5) then 
-					return 
-				end
-			end
-		end
-	end
-	
+    end
+
     local function Defensive()
 
         for i = 1, GetObjectCount() do
@@ -1494,14 +1387,14 @@ local function runRotation()
                             return
                         end
                     end
-                    --[[
-                             -- Paralysis
-                             if isChecked("Paralysis") and not isCastingSpell(spell.essenceFont) then
-                                 if cast.paralysis(thisUnit) then
-                                     return
-                                 end
+                    
+                    -- Paralysis
+                        if isChecked("Paralysis") and not isCastingSpell(spell.essenceFont) then
+                             if cast.paralysis(thisUnit) then
+                                 return
                              end
-                             ]]
+                    end
+                     
                 end
             end
         end -- End Interrupt Check
